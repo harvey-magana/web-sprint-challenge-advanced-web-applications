@@ -16,19 +16,21 @@ const BubblePage = (props) => {
   // set that data to the colorList state property
 
   useEffect(() => {
+    getColors();
+  }, []);
+
+  const getColors = () => {
     axiosWithAuth().get("http://localhost:5000/api/colors")
     .then(res => {
-        //console.log(res)
         const colors = res.data;
-        setColorList({ colorList: colors })
+        setColorList(colors)
         props.history.push('/bubble-page')
     })
     .catch(err => {
-        console.log(err.response);
+        console.log(err);
     })
-  }, []);
+  }
 
-  console.log(colorList)
   const logout = () => {
     localStorage.removeItem("token");
     props.history.push('/login');
@@ -47,7 +49,6 @@ const BubblePage = (props) => {
         </Menu>
         
         <Container text style={{ marginTop: '7em' }}>
-
           <ColorList colors={colorList} updateColors={setColorList} />
           <Bubbles colors={colorList} />
         </Container>
