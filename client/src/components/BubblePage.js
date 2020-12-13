@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axiosWithAuth from '../utils/axioxWithAuth';
 import { NavLink } from "react-router-dom";
-import axios from "axios";
+//import axios from "axios";
 import {
   Container,
   Menu
@@ -49,7 +49,7 @@ const BubblePage = (props) => {
         </Menu>
         
         <Container text style={{ marginTop: '7em' }}>
-          <ColorList colors={colorList} updateColors={setColorList} />
+          <ColorList props={props} colors={colorList} updateColors={setColorList} />
           <Bubbles colors={colorList} />
         </Container>
     </>

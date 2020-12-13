@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axiosWithAuth from '../utils/axioxWithAuth';
 
-const initialColor = {
+const initialColor = [{
   color: "",
   code: { hex: "" }
-};
+}];
 
-const ColorList = ({ colors, updateColors }) => {
-  console.log(colors);
+const ColorList = ({ props, colors, updateColors }) => {
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
 
@@ -21,11 +20,36 @@ const ColorList = ({ colors, updateColors }) => {
     // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
-  };
+    
+    const hex = colorToEdit && colorToEdit.color ? colorToEdit.color.hex : null;
+    console.dir(e.target)
+    const newColor = {
+      id: colorToEdit.id, 
+      color: colorToEdit.color, 
+      code: hex
+    }
+
+    axiosWithAuth().put(`http://localhost:5000/api/colors/${colorToEdit.id}`, newColor)
+    .then(res => {
+      const colorReturned = [res.data].find(item => item.id == newColor.id)
+      setColorToEdit([colorToEdit].map(item => {
+          if(item.id === colorReturned.id) {
+          return colorReturned
+          }
+          return item
+      }))
+      props.history.push('/bubble-page')
+      })
+      .catch(err => console.error(err))
+    };
 
   const deleteColor = color => {
     // make a delete request to delete this color
   };
+
+  const handleHexChange = (e) => {
+    console.log(e)
+  }
 
   return (
     <div className="colors-wrap">
@@ -56,8 +80,11 @@ const ColorList = ({ colors, updateColors }) => {
           <label>
             color name:
             <input
-              onChange={e =>
+              onChange={e => {
                 setColorToEdit({ ...colorToEdit, color: e.target.value })
+                console.log(colorToEdit)
+              }
+                
               }
               value={colorToEdit.color}
             />
@@ -65,11 +92,13 @@ const ColorList = ({ colors, updateColors }) => {
           <label>
             hex code:
             <input
-              onChange={e =>
+              onChange={e => {
                 setColorToEdit({
                   ...colorToEdit,
                   code: { hex: e.target.value }
                 })
+                /*console.log(Object.values[2](colorToEdit))*/
+              }
               }
               value={colorToEdit.code.hex}
             />
