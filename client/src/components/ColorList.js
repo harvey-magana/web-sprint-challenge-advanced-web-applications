@@ -13,6 +13,7 @@ const ColorList = ({ props, colors, updateColors }) => {
   const editColor = color => {
     setEditing(true);
     setColorToEdit(color);
+    console.log(color.code.hex)
   };
 
   const saveEdit = e => {
@@ -21,14 +22,12 @@ const ColorList = ({ props, colors, updateColors }) => {
     // think about where will you get the id from...
     // where is is saved right now?
     
-    const hex = colorToEdit && colorToEdit.color ? colorToEdit.color.hex : null;
-    console.dir(e.target)
     const newColor = {
       id: colorToEdit.id, 
       color: colorToEdit.color, 
-      code: hex
+      code: { hex: colorToEdit.code.hex }
     }
-
+    console.log(newColor)
     axiosWithAuth().put(`http://localhost:5000/api/colors/${colorToEdit.id}`, newColor)
     .then(res => {
       const colorReturned = [res.data].find(item => item.id == newColor.id)
@@ -38,6 +37,7 @@ const ColorList = ({ props, colors, updateColors }) => {
           }
           return item
       }))
+      console.log(props.history)
       props.history.push('/bubble-page')
       })
       .catch(err => console.error(err))
@@ -46,10 +46,6 @@ const ColorList = ({ props, colors, updateColors }) => {
   const deleteColor = color => {
     // make a delete request to delete this color
   };
-
-  const handleHexChange = (e) => {
-    console.log(e)
-  }
 
   return (
     <div className="colors-wrap">
@@ -82,7 +78,6 @@ const ColorList = ({ props, colors, updateColors }) => {
             <input
               onChange={e => {
                 setColorToEdit({ ...colorToEdit, color: e.target.value })
-                console.log(colorToEdit)
               }
                 
               }
@@ -97,7 +92,6 @@ const ColorList = ({ props, colors, updateColors }) => {
                   ...colorToEdit,
                   code: { hex: e.target.value }
                 })
-                /*console.log(Object.values[2](colorToEdit))*/
               }
               }
               value={colorToEdit.code.hex}

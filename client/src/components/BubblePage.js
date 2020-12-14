@@ -26,9 +26,7 @@ const BubblePage = (props) => {
         setColorList(colors)
         props.history.push('/bubble-page')
     })
-    .catch(err => {
-        console.log(err);
-    })
+    .catch(err => console.error(err))
   }
 
   const logout = () => {
